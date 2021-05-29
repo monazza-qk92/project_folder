@@ -4,46 +4,46 @@ import numpy as np
 import pandas as pd
 import copy
 def kmeans(k, df):
-max_x = max(df['x'])
-max_y = max(df['y'])
+ max_x = max(df['x'])
+ max_y = max(df['y'])
 # centroids[i] = [x, y]
-centroids = {
-i+1: [np.random.randint(0, max_x), np.random.randint(0, max_y)]
-for i in range(k)
- }
-print(centroids)
+ centroids = {
+ i+1: [np.random.randint(0, max_x), np.random.randint(0, max_y)]
+ for i in range(k)
+  }
+ print(centroids)
 ## Assignment Stage
 def assignment(df, centroids):
-for i in centroids.keys():
+ for i in centroids.keys():
 # sqrt((x1 - x2)^2 - (y1 - y2)^2)
-df['distance_from_{}'.format(i)] = (np.sqrt((df['x'] - centroids[i][0]) ** 2 + (df['y'] - centroids[i][1]) ** 2 ) )
-centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
-df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
-df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
-return df
+ df['distance_from_{}'.format(i)] = (np.sqrt((df['x'] - centroids[i][0]) ** 2 + (df['y'] - centroids[i][1]) ** 2 ) )
+ centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+ df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+ df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+ return df
 df = assignment(df, centroids)
 print(centroids)
 ## Update Stage
 old_centroids = copy.deepcopy(centroids)
 def update(k):
 for i in centroids.keys():
-me = np.mean(df[df['closest'] == i]['x'])
-if(me>0):
-centroids[i][0] = me
-mee = np.mean(df[df['closest'] == i]['y'])
-if (mee > 0):
-centroids[i][1] = mee
-return k
-centroids = update(centroids)
-print(centroids)
+ me = np.mean(df[df['closest'] == i]['x'])
+ if(me>0):
+ centroids[i][0] = me
+ mee = np.mean(df[df['closest'] == i]['y'])
+ if (mee > 0):
+ centroids[i][1] = mee
+ return k
+ centroids = update(centroids)
+ print(centroids)
 ## Repeat Assigment Stage
 df = assignment(df, centroids)
 # Continue until all assigned categories don't change any more
 while True:
-closest_centroids = df['closest'].copy(deep=True)
-centroids = update(centroids)
-df = assignment(df, centroids)
-if closest_centroids.equals(df['closest']):
+ closest_centroids = df['closest'].copy(deep=True)
+ centroids = update(centroids)
+ df = assignment(df, centroids)
+ if closest_centroids.equals(df['closest']):
 break
 print(centroids)
 return df, centroids
