@@ -31,7 +31,7 @@ def update(k):
   if(me>0):
    centroids[i][0] = me
    mee = np.mean(df[df['closest'] == i]['y'])
-    if (mee > 0):
+   if (mee > 0):
      centroids[i][1] = mee
      return k
  centroids = update(centroids)
