@@ -16,24 +16,24 @@ def kmeans(k, df):
 def assignment(df, centroids):
  for i in centroids.keys():
 # sqrt((x1 - x2)^2 - (y1 - y2)^2)
- df['distance_from_{}'.format(i)] = (np.sqrt((df['x'] - centroids[i][0]) ** 2 + (df['y'] - centroids[i][1]) ** 2 ) )
- centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
- df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
- df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
- return df
+  df['distance_from_{}'.format(i)] = (np.sqrt((df['x'] - centroids[i][0]) ** 2 + (df['y'] - centroids[i][1]) ** 2 ) )
+  centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+  df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+  df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+  return df
 df = assignment(df, centroids)
 print(centroids)
 ## Update Stage
 old_centroids = copy.deepcopy(centroids)
 def update(k):
-for i in centroids.keys():
- me = np.mean(df[df['closest'] == i]['x'])
- if(me>0):
- centroids[i][0] = me
- mee = np.mean(df[df['closest'] == i]['y'])
- if (mee > 0):
- centroids[i][1] = mee
- return k
+ for i in centroids.keys():
+  me = np.mean(df[df['closest'] == i]['x'])
+  if(me>0):
+   centroids[i][0] = me
+   mee = np.mean(df[df['closest'] == i]['y'])
+    if (mee > 0):
+     centroids[i][1] = mee
+     return k
  centroids = update(centroids)
  print(centroids)
 ## Repeat Assigment Stage
